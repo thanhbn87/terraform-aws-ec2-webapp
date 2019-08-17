@@ -15,7 +15,7 @@ resource "aws_instance" "this" {
 
   key_name               = "${var.key_name}"
   vpc_security_group_ids = ["${var.vpc_security_group_ids}"]
-  subnet_id              = "${var.subnets[count.index % 2]}"
+  subnet_id              = "${element(var.subnets, count.index % length(var.subnets))}"
   iam_instance_profile   = "${var.iam_instance_profile}"
   associate_public_ip_address = "${var.associate_public_ip_address}"
   disable_api_termination     = "${var.protect_termination}"
