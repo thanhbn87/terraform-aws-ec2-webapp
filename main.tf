@@ -26,3 +26,25 @@ resource "aws_instance" "this" {
     Env  = "${var.project_env}"
   }
 }
+
+//////////////////////////////////////////////
+////// CloudWatch:
+//////////////////////////////////////////////
+data "aws_region" "this" {}
+resource "aws_cloudwatch_metric_alarm" "ec2_recover" {
+  count               = "${var.ec2_autorecover ? 1 : 0}"
+  alarm_name          = "ec2-recovery-${lower(var.name)}"
+  namespace           = "AWS/EC2"
+  evaluation_periods  = "${var.cw_eval_periods}"
+  period              = "${var.cw_period}"
+  alarm_description   = "Auto recover ${lower(var.name)} instance"
+  alarm_actions       = ["arn:aws:automate:${data.aws_region.this.name}:ec2:recover"]
+  statistic           = "${var.cw_statistic}"
+  comparison_operator = "${var.cw_comparison}"
+  threshold           = "${var.cw_threshold}"
+  metric_name         = "${var.cw_recover_metric}"
+
+  dimensions {
+    InstanceId = "${aws_instance.bastion.id}"
+  }
+}
