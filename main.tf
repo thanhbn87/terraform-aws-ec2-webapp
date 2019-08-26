@@ -45,6 +45,6 @@ resource "aws_cloudwatch_metric_alarm" "ec2_recover" {
   metric_name         = "${var.cw_recover_metric}"
 
   dimensions {
-    InstanceId = "${aws_instance.bastion.id}"
+    InstanceId = "${aws_instance.this.id}"
   }
 }
