@@ -32,7 +32,7 @@ resource "aws_instance" "this" {
 //////////////////////////////////////////////
 data "aws_region" "this" {}
 resource "aws_cloudwatch_metric_alarm" "ec2_recover" {
-  count               = "${var.ec2_autorecover ? 1 : 0}"
+  count               = "${var.ec2_autorecover ? var.count : 0}"
   alarm_name          = "ec2-recovery-${lower(var.name)}"
   namespace           = "AWS/EC2"
   evaluation_periods  = "${var.cw_eval_periods}"
@@ -45,6 +45,6 @@ resource "aws_cloudwatch_metric_alarm" "ec2_recover" {
   metric_name         = "${var.cw_recover_metric}"
 
   dimensions {
-    InstanceId = "${aws_instance.this.id}"
+    InstanceId = "${element(aws_instance.this.*.id,count.index)}"
   }
 }
