@@ -1,3 +1,7 @@
+locals {
+  name = "${var.namespace == "" ? "" : "${lower(var.namespace)}-"}${lower(var.project_env_short)}-${lower(var.name)}
+}
+
 resource "aws_instance" "this" {
   count         = "${var.count}"
   instance_type = "${var.instance_type}"
@@ -22,7 +26,7 @@ resource "aws_instance" "this" {
   ebs_optimized           = "${var.ebs_optimized}"
 
   tags {
-    Name = "${var.namespace == "" ? "" : "${lower(var.namespace)}-"}${lower(var.project_env_short)}-${lower(var.name)}-${format("%02d", count.index + 1)}"
+    Name = "${local.name}-${format("%02d", count.index + 1)}"
     Env  = "${var.project_env}"
   }
 }
@@ -33,11 +37,11 @@ resource "aws_instance" "this" {
 data "aws_region" "this" {}
 resource "aws_cloudwatch_metric_alarm" "ec2_recover" {
   count               = "${var.ec2_autorecover ? var.count : 0}"
-  alarm_name          = "ec2-recovery-${lower(var.name)}"
+  alarm_name          = "ec2-recovery-${local.name}-${format("%02d", count.index + 1)}"
   namespace           = "AWS/EC2"
   evaluation_periods  = "${var.cw_eval_periods}"
   period              = "${var.cw_period}"
-  alarm_description   = "Auto recover ${lower(var.name)} instance"
+  alarm_description   = "Auto recover ${local.name}-${format("%02d", count.index + 1)} instance"
   alarm_actions       = ["arn:aws:automate:${data.aws_region.this.name}:ec2:recover"]
   statistic           = "${var.cw_statistic}"
   comparison_operator = "${var.cw_comparison}"
