@@ -21,9 +21,11 @@ resource "aws_instance" "this" {
   vpc_security_group_ids = ["${var.vpc_security_group_ids}"]
   subnet_id              = "${element(var.subnets, count.index % length(var.subnets))}"
   iam_instance_profile   = "${var.iam_instance_profile}"
-  associate_public_ip_address = "${var.associate_public_ip_address}"
+  ebs_optimized          = "${var.ebs_optimized}"
+  user_data              = "${var.user_data}"
+
   disable_api_termination     = "${var.protect_termination}"
-  ebs_optimized           = "${var.ebs_optimized}"
+  associate_public_ip_address = "${var.associate_public_ip_address}"
 
   tags {
     Name = "${local.name}-${format("%02d", count.index + 1)}"

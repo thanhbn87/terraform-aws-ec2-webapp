@@ -17,6 +17,10 @@ variable "associate_public_ip_address" { default = false }
 variable "protect_termination" { default = true }
 variable "cpu_credits" { default = "standard" }
 variable "ebs_optimized" { default = false }
+variable "user_data" {
+  description = "The user data to provide when launching the instance"
+  default     = " "
+}
 
 // CloudWatch:
 variable "ec2_autorecover" { default = true }
