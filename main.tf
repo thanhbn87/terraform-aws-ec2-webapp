@@ -27,10 +27,10 @@ resource "aws_instance" "this" {
   disable_api_termination     = "${var.protect_termination}"
   associate_public_ip_address = "${var.associate_public_ip_address}"
 
-  tags {
-    Name = "${local.name}-${format("%02d", count.index + 1)}"
-    Env  = "${var.project_env}"
-  }
+  tags = "${merge(
+    var.tags,
+    map("Env", "${var.project_env}", "Name", "${local.name}-${format("%02d", count.index + 1)}")
+  )}"
 }
 
 //////////////////////////////////////////////
