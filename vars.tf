@@ -22,6 +22,10 @@ variable "user_data" {
   default     = " "
 }
 
+variable "tags" {
+  default = {}
+}
+
 // CloudWatch:
 variable "ec2_autorecover" { default = true }
 variable "cw_eval_periods" { default = "2" }
